@@ -1,0 +1,116 @@
+-- main/game_controller.script
+--
+-- The orchestrator. Owns canonical run state (score, lives, level index),
+-- spawns bricks for each level via a factory, and reacts to gameplay events.
+-- Nothing else in the project knows about score or lives directly; they
+-- only post events here.
+
+local events = require "modules.events"
+local levels = require "modules.levels"
+
+local STARTING_LIVES = 3
+local POINTS_LEVEL_BONUS = 1000
+
+go.property("brick_factory", msg.url("#brick_factory"))
+go.property("ball_id", msg.url("/ball"))
+go.property("paddle_id", msg.url("/paddle"))
+go.property("hud_url", msg.url("hud:/hud#hud"))
+
+local function broadcast_score(self)
+  msg.post(self.hud_url, events.score_changed, { score = self.score })
+end
+
+local function broadcast_lives(self)
+  msg.post(self.hud_url, events.life_lost, { lives = self.lives })
+end
+
+local function spawn_level(self, idx)
+  -- Remove anything left from a previous level (e.g., on a manual restart).
+  for _, id in ipairs(self.brick_ids) do
+    go.delete(id)
+  end
+  self.brick_ids = {}
+
+  local spec = levels.unpack(idx)
+  if not spec then
+    -- Wrapped past the last level — loop back for now (a real game would credits).
+    self.level = 1
+    spec = levels.unpack(1)
+  end
+
+  for _, b in ipairs(spec) do
+    local id = factory.create(
+      self.brick_factory,
+      vmath.vector3(b.x, b.y, 0),
+      nil,
+      { hp = b.hp }       -- script property override at spawn
+    )
+    self.brick_ids[#self.brick_ids + 1] = id
+  end
+  self.bricks_remaining = #spec
+end
+
+local function reset_ball(self)
+  msg.post(self.ball_id, events.attach_to_paddle, { paddle_id = self.paddle_id })
+end
+
+local function full_restart(self)
+  self.score = 0
+  self.lives = STARTING_LIVES
+  self.level = 1
+  spawn_level(self, self.level)
+  reset_ball(self)
+  broadcast_score(self)
+  broadcast_lives(self)
+end
+
+function init(self)
+  self.score = 0
+  self.lives = STARTING_LIVES
+  self.level = 1
+  self.brick_ids = {}
+  self.bricks_remaining = 0
+  msg.post(".", "acquire_input_focus")
+  -- One-frame delay so the HUD's init() has run before we push initial state.
+  msg.post("#", "bootstrap")
+end
+
+function on_message(self, message_id, message, sender)
+  if message_id == hash("bootstrap") then
+    full_restart(self)
+
+  elseif message_id == events.brick_destroyed then
+    self.score = self.score + (message.points or 0)
+    self.bricks_remaining = self.bricks_remaining - 1
+    broadcast_score(self)
+    if self.bricks_remaining <= 0 then
+      self.score = self.score + POINTS_LEVEL_BONUS
+      broadcast_score(self)
+      msg.post(self.hud_url, events.level_cleared)
+      self.level = self.level + 1
+      spawn_level(self, self.level)
+      reset_ball(self)
+    end
+
+  elseif message_id == events.ball_lost then
+    self.lives = self.lives - 1
+    broadcast_lives(self)
+    if self.lives <= 0 then
+      msg.post(self.hud_url, events.game_over)
+      -- Wait for restart input.
+    else
+      reset_ball(self)
+    end
+
+  elseif message_id == events.reset_request then
+    full_restart(self)
+  end
+end
+
+function on_input(self, action_id, action)
+  if action_id == hash("restart") and action.pressed then
+    full_restart(self)
+  elseif action_id == hash("quit") and action.pressed then
+    msg.post("@system:", "exit", { code = 0 })
+  end
+end

@@ -1,0 +1,113 @@
+-- main/ball.script
+--
+-- Ball physics + collision response. The ball has two states:
+--   * ATTACHED — riding on top of the paddle, waiting for launch input.
+--   * FREE     — moving under its own velocity, bouncing off contacts.
+--
+-- Collision is driven by Defold's "contact_point_response" message, which
+-- carries the contact normal we need to reflect the velocity. We also use
+-- the message-sender's group hash to decide what to do (wall vs. paddle
+-- vs. brick).
+
+local events = require "modules.events"
+
+go.property("base_speed", 360)
+go.property("max_speed", 620)
+go.property("speed_step", 14)             -- speed added per brick destroyed
+go.property("paddle_id", msg.url())       -- assigned by the controller
+
+local STATE_ATTACHED = 1
+local STATE_FREE     = 2
+
+local PADDLE_OFFSET_Y = 18                -- where the ball sits when attached
+
+local function reflect(v, n)
+  -- v - 2*(v·n)*n
+  local d = vmath.dot(v, n)
+  return v - n * (2 * d)
+end
+
+local function paddle_english(self, paddle_pos, contact_pos)
+  -- Add some horizontal velocity based on where the ball struck the paddle.
+  -- Lets the player aim by hitting with the paddle's edges. Classic Arkanoid.
+  local offset = (contact_pos.x - paddle_pos.x) / 56   -- -1 .. 1
+  local v = self.velocity
+  -- Blend: keep magnitude, bias direction toward outward angle.
+  v.x = v.x + offset * 220
+  -- Always launch upward after a paddle hit.
+  if v.y < 0 then v.y = -v.y end
+  self.velocity = vmath.normalize(v) * vmath.length(self.velocity)
+end
+
+function init(self)
+  self.state    = STATE_ATTACHED
+  self.velocity = vmath.vector3(0, 0, 0)
+  self.speed    = self.base_speed
+  msg.post(".", "acquire_input_focus")
+end
+
+function update(self, dt)
+  if self.state == STATE_ATTACHED then
+    -- Track the paddle until launched.
+    local paddle_pos = go.get_position(self.paddle_id)
+    go.set_position(vmath.vector3(paddle_pos.x, paddle_pos.y + PADDLE_OFFSET_Y, 0))
+  elseif self.state == STATE_FREE then
+    local pos = go.get_position()
+    pos = pos + self.velocity * dt
+    go.set_position(pos)
+    -- Bottom-of-screen detection — the ball is out of play.
+    if pos.y < -16 then
+      self.state = STATE_ATTACHED
+      msg.post("/game_controller", events.ball_lost)
+    end
+  end
+end
+
+function on_input(self, action_id, action)
+  if (action_id == hash("launch") or action_id == hash("click")) and action.pressed then
+    if self.state == STATE_ATTACHED then
+      -- Launch up and slightly biased to the direction the paddle is moving.
+      self.velocity = vmath.normalize(vmath.vector3(0.25, 1, 0)) * self.speed
+      self.state = STATE_FREE
+    end
+  end
+end
+
+function on_message(self, message_id, message, sender)
+  if message_id == hash("contact_point_response") then
+    if self.state ~= STATE_FREE then return end
+    local group = message.other_group
+    local n = message.normal       -- points from "other" toward us
+
+    -- Push out of penetration to avoid sticking.
+    if message.distance and message.distance > 0 then
+      local pos = go.get_position()
+      go.set_position(pos + n * message.distance)
+    end
+
+    if group == hash("paddle") then
+      paddle_english(self, go.get_position(self.paddle_id), go.get_position())
+    elseif group == hash("brick") then
+      self.velocity = reflect(self.velocity, n)
+      -- Tell the brick it took a hit.
+      msg.post(sender, events.brick_hit)
+      -- Speed up slightly with each brick — keeps later play tense.
+      self.speed = math.min(self.max_speed, self.speed + self.speed_step)
+      self.velocity = vmath.normalize(self.velocity) * self.speed
+    else  -- walls and anything else
+      self.velocity = reflect(self.velocity, n)
+    end
+
+  elseif message_id == events.attach_to_paddle then
+    self.paddle_id = message.paddle_id or self.paddle_id
+    self.state     = STATE_ATTACHED
+    self.speed     = self.base_speed
+
+  elseif message_id == events.launch_ball then
+    if self.state == STATE_ATTACHED then
+      local dir = message.direction or vmath.vector3(0.25, 1, 0)
+      self.velocity = vmath.normalize(dir) * self.speed
+      self.state = STATE_FREE
+    end
+  end
+end

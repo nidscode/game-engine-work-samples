@@ -1,0 +1,39 @@
+[project]
+title = Brick Breaker
+version = 1.0
+write_log = 0
+
+[bootstrap]
+main_collection = /main/main.collectionc
+render = /builtins/render/default.renderc
+
+[display]
+width = 960
+height = 720
+samples = 4
+fullscreen = 0
+vsync = 1
+update_frequency = 60
+high_dpi = 1
+clear_color_red = 0.04
+clear_color_green = 0.05
+clear_color_blue = 0.10
+clear_color_alpha = 1.0
+
+[input]
+game_binding = /input/game.input_bindingc
+use_accelerometer = 0
+repeat_delay = 0.4
+repeat_interval = 0.08
+
+[physics]
+type = 2D
+gravity_y = 0
+debug = 0
+scale = 1.0
+
+[script]
+shared_state = 1
+
+[label]
+font_size = 24

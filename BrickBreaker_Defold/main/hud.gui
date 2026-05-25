@@ -1,0 +1,42 @@
+script: "/main/hud.gui_script"
+fonts {
+  name: "default"
+  font: "/builtins/fonts/default.font"
+}
+nodes {
+  position { x: 24 y: 696 z: 0 }
+  scale    { x: 1  y: 1  z: 1 }
+  size     { x: 240 y: 24 z: 0 }
+  color    { x: 1  y: 1  z: 1 w: 0.95 }
+  type: TYPE_TEXT
+  text: "SCORE  000000"
+  font: "default"
+  id: "score_label"
+  pivot: PIVOT_W
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_TOP
+}
+nodes {
+  position { x: 936 y: 696 z: 0 }
+  scale    { x: 1  y: 1  z: 1 }
+  size     { x: 180 y: 24 z: 0 }
+  color    { x: 1  y: 1  z: 1 w: 0.95 }
+  type: TYPE_TEXT
+  text: "LIVES  3"
+  font: "default"
+  id: "lives_label"
+  pivot: PIVOT_E
+  xanchor: XANCHOR_RIGHT
+  yanchor: YANCHOR_TOP
+}
+nodes {
+  position { x: 480 y: 360 z: 0 }
+  scale    { x: 1.5 y: 1.5 z: 1 }
+  size     { x: 480 y: 96 z: 0 }
+  color    { x: 1  y: 1  z: 1 w: 0 }
+  type: TYPE_TEXT
+  text: ""
+  font: "default"
+  id: "banner_label"
+  pivot: PIVOT_CENTER
+}

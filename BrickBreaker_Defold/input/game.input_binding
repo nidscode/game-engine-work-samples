@@ -1,0 +1,36 @@
+key_trigger {
+  input: KEY_LEFT
+  action: "move_left"
+}
+key_trigger {
+  input: KEY_RIGHT
+  action: "move_right"
+}
+key_trigger {
+  input: KEY_A
+  action: "move_left"
+}
+key_trigger {
+  input: KEY_D
+  action: "move_right"
+}
+key_trigger {
+  input: KEY_SPACE
+  action: "launch"
+}
+key_trigger {
+  input: KEY_R
+  action: "restart"
+}
+key_trigger {
+  input: KEY_ESC
+  action: "quit"
+}
+mouse_trigger {
+  input: MOUSE_BUTTON_LEFT
+  action: "launch"
+}
+mouse_trigger {
+  input: MOUSE_BUTTON_1
+  action: "click"
+}

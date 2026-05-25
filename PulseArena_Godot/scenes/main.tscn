@@ -1,0 +1,54 @@
+[gd_scene load_steps=8 format=3 uid="uid://b1pulsearena_main"]
+
+[ext_resource type="Script" path="res://scripts/systems/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/systems/camera_shake.gd" id="2_shake"]
+[ext_resource type="Script" path="res://scripts/systems/wave_spawner.gd" id="3_spawner"]
+[ext_resource type="PackedScene" uid="uid://b1pulsearena_player" path="res://scenes/player.tscn" id="4_player"]
+[ext_resource type="PackedScene" uid="uid://b1pulsearena_chaser" path="res://scenes/enemies/chaser.tscn" id="5_chaser"]
+[ext_resource type="PackedScene" uid="uid://b1pulsearena_shooter" path="res://scenes/enemies/shooter.tscn" id="6_shooter"]
+[ext_resource type="PackedScene" uid="uid://b1pulsearena_hud" path="res://scenes/ui/hud.tscn" id="7_hud"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.05, 0.04, 0.12, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+script = ExtResource("2_shake")
+
+[node name="Player" parent="." instance=ExtResource("4_player")]
+position = Vector2(640, 360)
+
+[node name="WaveSpawner" type="Node2D" parent="."]
+script = ExtResource("3_spawner")
+chaser_scene = ExtResource("5_chaser")
+shooter_scene = ExtResource("6_shooter")
+
+[node name="HUD" parent="." instance=ExtResource("7_hud")]
+
+[node name="GameOverOverlay" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="ColorRect" parent="GameOverOverlay"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="Label" type="Label" parent="GameOverOverlay"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -40.0
+offset_right = 200.0
+offset_bottom = 40.0
+text = "GAME OVER
+press any key"
+horizontal_alignment = 1
+vertical_alignment = 1

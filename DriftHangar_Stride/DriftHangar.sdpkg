@@ -1,0 +1,12 @@
+!Package
+SerializedVersion: {Assets: 3.1.0.1}
+Meta:
+    Name: DriftHangar
+    Version: 1.0.0.0
+    Authors: [Agneya Kolhatkar]
+    Tags: []
+AssetFolders:
+    -   Path: !file Assets
+Profile: Default
+RootAssets:
+    - 9b9f5f02-1b3e-4f7a-91d1-1a6d8a0aab21:Scenes/MainScene.sdscene

@@ -1,0 +1,37 @@
+components {
+  id: "script"
+  component: "/main/ball.script"
+}
+embedded_components {
+  id: "sprite"
+  type: "sprite"
+  data: "default_animation: \"ball\"\n"
+        "material: \"/builtins/materials/sprite.material\"\n"
+        "size {\n"
+        "  x: 16.0\n"
+        "  y: 16.0\n"
+        "  z: 0.0\n"
+        "}\n"
+}
+embedded_components {
+  id: "collisionobject"
+  type: "collisionobject"
+  data: "type: COLLISION_OBJECT_TYPE_KINEMATIC\n"
+        "mass: 0.0\n"
+        "friction: 0.0\n"
+        "restitution: 1.0\n"
+        "group: \"ball\"\n"
+        "mask: \"paddle\"\n"
+        "mask: \"brick\"\n"
+        "mask: \"wall\"\n"
+        "embedded_collision_shape {\n"
+        "  shapes {\n"
+        "    shape_type: TYPE_SPHERE\n"
+        "    position { x: 0 y: 0 z: 0 }\n"
+        "    rotation { x: 0 y: 0 z: 0 w: 1 }\n"
+        "    index: 0\n"
+        "    count: 1\n"
+        "  }\n"
+        "  data: 8.0\n"
+        "}\n"
+}

@@ -1,0 +1,47 @@
+-- main/hud.gui_script
+--
+-- HUD overlay. Pure listener — reacts to events posted by the controller.
+-- Never queries gameplay state directly, so the gameplay collection could
+-- be swapped wholesale without touching this script.
+
+local events = require "modules.events"
+
+local function set_text(node_id, text)
+  local node = gui.get_node(node_id)
+  gui.set_text(node, text)
+end
+
+local function flash(node_id)
+  local node = gui.get_node(node_id)
+  gui.set_color(node, vmath.vector4(1, 1, 1, 1))
+  gui.animate(node, "color.w", 0.6, gui.EASING_INOUTQUAD, 0.25,
+              0, nil, gui.PLAYBACK_ONCE_PINGPONG)
+end
+
+function init(self)
+  set_text("score_label", "SCORE  000000")
+  set_text("lives_label", "LIVES  3")
+  set_text("banner_label", "")
+  gui.set_color(gui.get_node("banner_label"), vmath.vector4(1, 1, 1, 0))
+end
+
+function on_message(self, message_id, message, sender)
+  if message_id == events.score_changed then
+    set_text("score_label", string.format("SCORE  %06d", message.score or 0))
+
+  elseif message_id == events.life_lost then
+    set_text("lives_label", string.format("LIVES  %d", message.lives or 0))
+    flash("lives_label")
+
+  elseif message_id == events.level_cleared then
+    local n = gui.get_node("banner_label")
+    gui.set_text(n, "LEVEL CLEAR")
+    gui.set_color(n, vmath.vector4(1, 1, 1, 1))
+    gui.animate(n, "color.w", 0, gui.EASING_INQUAD, 1.2)
+
+  elseif message_id == events.game_over then
+    local n = gui.get_node("banner_label")
+    gui.set_text(n, "GAME OVER\npress R to restart")
+    gui.set_color(n, vmath.vector4(1, 1, 1, 1))
+  end
+end

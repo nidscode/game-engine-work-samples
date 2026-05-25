@@ -1,0 +1,42 @@
+-- build.settings
+--
+-- Cross-platform build configuration. Locks orientation to portrait,
+-- declares iOS/Android settings, and disables splash where licensed.
+
+settings = {
+  orientation = {
+    default   = "portrait",
+    supported = { "portrait" },
+  },
+
+  window = {
+    defaultMode      = "normal",
+    defaultViewWidth = 720,
+    defaultViewHeight = 1280,
+    resizable        = false,
+    titleText        = { default = "Drop Zone" },
+  },
+
+  excludeFiles = {
+    all = { "*.psd", "*.aseprite", "Icon-Original.png" },
+  },
+
+  iphone = {
+    plist = {
+      UILaunchStoryboardName    = "LaunchScreen",
+      UIStatusBarHidden         = true,
+      UIApplicationExitsOnSuspend = false,
+    },
+  },
+
+  android = {
+    minSdkVersion = "21",
+    usesPermissions = {
+      "android.permission.VIBRATE",
+    },
+  },
+
+  plugins = {
+    -- e.g. ads, analytics — none required for this sample.
+  },
+}

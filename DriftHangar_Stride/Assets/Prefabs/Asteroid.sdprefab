@@ -1,0 +1,22 @@
+!PrefabAsset
+Id: 4e7f1010-2c8a-4d3e-9b71-ff34a1c7d201
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! 5b000001-0000-0000-0000-000000000001
+    Parts:
+        -   Entity:
+                Id: 5b000001-0000-0000-0000-000000000001
+                Name: Asteroid
+                Components:
+                    aa110000-0000-0000-0000-000000000001: !TransformComponent
+                        Id: aa110000-0000-0000-0000-000000000001
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                    aa110000-0000-0000-0000-000000000002: !ModelComponent
+                        Id: aa110000-0000-0000-0000-000000000002
+                        # Assign a low-poly rock model + material in the editor.
+                        Model: null
+                        Materials: {}

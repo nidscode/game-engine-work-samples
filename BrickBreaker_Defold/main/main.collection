@@ -1,0 +1,49 @@
+name: "main"
+
+# The play field walls.
+instances {
+  id: "walls"
+  prototype: "/main/walls.go"
+  position { x: 0 y: 0 z: 0 }
+  rotation { x: 0 y: 0 z: 0 w: 1 }
+  scale3   { x: 1 y: 1 z: 1 }
+}
+
+# Player paddle.
+instances {
+  id: "paddle"
+  prototype: "/main/paddle.go"
+  position { x: 480 y: 80 z: 0 }
+  rotation { x: 0 y: 0 z: 0 w: 1 }
+  scale3   { x: 1 y: 1 z: 1 }
+}
+
+# Ball — starts attached to the paddle (controlled by game_controller).
+instances {
+  id: "ball"
+  prototype: "/main/ball.go"
+  position { x: 480 y: 100 z: 0 }
+  rotation { x: 0 y: 0 z: 0 w: 1 }
+  scale3   { x: 1 y: 1 z: 1 }
+}
+
+# Controller and brick factory.
+instances {
+  id: "game_controller"
+  prototype: "/main/game_controller.go"
+  position { x: 0 y: 0 z: 0 }
+  rotation { x: 0 y: 0 z: 0 w: 1 }
+  scale3   { x: 1 y: 1 z: 1 }
+}
+
+# HUD overlay collection.
+embedded_instances {
+  id: "hud"
+  data: "components {\n"
+        "  id: \"hud\"\n"
+        "  component: \"/main/hud.gui\"\n"
+        "}\n"
+  position { x: 0 y: 0 z: 0 }
+  rotation { x: 0 y: 0 z: 0 w: 1 }
+  scale3   { x: 1 y: 1 z: 1 }
+}

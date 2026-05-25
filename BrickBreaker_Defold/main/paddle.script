@@ -1,0 +1,47 @@
+-- main/paddle.script
+--
+-- Player paddle. Reads input each frame and slides along the X axis.
+-- Movement is exponentially smoothed so the paddle feels responsive but
+-- not jittery; clamp bounds are read from properties so designers can
+-- adjust without touching code.
+
+local PADDLE_HALF_WIDTH = 56   -- visual half-width in pixels
+
+go.property("max_speed", 720)            -- pixels / second
+go.property("smoothing", 18.0)           -- higher = snappier
+go.property("min_x", 80)
+go.property("max_x", 880)
+
+local function clamp(v, lo, hi)
+  if v < lo then return lo end
+  if v > hi then return hi end
+  return v
+end
+
+function init(self)
+  msg.post(".", "acquire_input_focus")
+  self.input_dir   = 0       -- -1 / 0 / 1 from this frame's input
+  self.velocity_x  = 0       -- current X velocity in px/s
+end
+
+function update(self, dt)
+  -- Frame-rate-independent exponential smoothing toward the input direction.
+  local target_vel = self.input_dir * self.max_speed
+  local k = 1 - math.exp(-self.smoothing * dt)
+  self.velocity_x = self.velocity_x + (target_vel - self.velocity_x) * k
+
+  local pos = go.get_position()
+  pos.x = clamp(pos.x + self.velocity_x * dt, self.min_x, self.max_x)
+  go.set_position(pos)
+
+  -- Reset for next frame; on_input fires before update each frame in Defold.
+  self.input_dir = 0
+end
+
+function on_input(self, action_id, action)
+  if action_id == hash("move_left") then
+    self.input_dir = -1
+  elseif action_id == hash("move_right") then
+    self.input_dir = 1
+  end
+end

@@ -1,0 +1,117 @@
+!SceneAsset
+Id: 9b9f5f02-1b3e-4f7a-91d1-1a6d8a0aab21
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! 2a000001-0000-0000-0000-000000000001
+        - ref!! 2a000002-0000-0000-0000-000000000002
+        - ref!! 2a000003-0000-0000-0000-000000000003
+        - ref!! 2a000004-0000-0000-0000-000000000004
+        - ref!! 2a000005-0000-0000-0000-000000000005
+        - ref!! 2a000006-0000-0000-0000-000000000006
+    Parts:
+        -   Entity:
+                Id: 2a000001-0000-0000-0000-000000000001
+                Name: Bootstrap
+                Components:
+                    87f4a000-0000-0000-0000-000000000001: !DriftHangar.Scripts.GameStateInstaller,DriftHangar.Game
+                        Id: 87f4a000-0000-0000-0000-000000000001
+                    87f4a000-0000-0000-0000-000000000002: !TransformComponent
+                        Id: 87f4a000-0000-0000-0000-000000000002
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+        -   Entity:
+                Id: 2a000002-0000-0000-0000-000000000002
+                Name: PlayerShip
+                Components:
+                    87f4b000-0000-0000-0000-000000000001: !TransformComponent
+                        Id: 87f4b000-0000-0000-0000-000000000001
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                    87f4b000-0000-0000-0000-000000000002: !DriftHangar.Scripts.ShipController,DriftHangar.Game
+                        Id: 87f4b000-0000-0000-0000-000000000002
+                        ThrustForce: 28.0
+                        MaxSpeed: 60.0
+                        LinearDrag: 0.55
+                        YawRateDegPerSec: 90.0
+                        PitchRateDegPerSec: 70.0
+                        RollRateDegPerSec: 110.0
+                        AngularSmoothing: 14.0
+                        RequireRightMouseForLook: true
+                    87f4b000-0000-0000-0000-000000000003: !ModelComponent
+                        Id: 87f4b000-0000-0000-0000-000000000003
+                        # Assign the ship model in the editor; left null here
+                        # because the asset isn't included in this sample.
+                        Model: null
+        -   Entity:
+                Id: 2a000003-0000-0000-0000-000000000003
+                Name: ChaseCamera
+                Components:
+                    87f4c000-0000-0000-0000-000000000001: !TransformComponent
+                        Id: 87f4c000-0000-0000-0000-000000000001
+                        Position: {X: 0.0, Y: 1.6, Z: 6.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                    87f4c000-0000-0000-0000-000000000002: !CameraComponent
+                        Id: 87f4c000-0000-0000-0000-000000000002
+                        Projection: Perspective
+                        VerticalFieldOfView: 60.0
+                        NearClipPlane: 0.1
+                        FarClipPlane: 1000.0
+                        Slot: ref!! 00000000-0000-0000-0000-000000000000:Main
+                    87f4c000-0000-0000-0000-000000000003: !DriftHangar.Scripts.ChaseCamera,DriftHangar.Game
+                        Id: 87f4c000-0000-0000-0000-000000000003
+                        Target: ref!! 2a000002-0000-0000-0000-000000000002
+                        LocalOffset: {X: 0.0, Y: 1.6, Z: 6.0}
+                        PositionStiffness: 36.0
+                        RotationSpeed: 8.0
+                        FovBase: 60.0
+                        FovKick: 14.0
+                        MaxSpeed: 60.0
+        -   Entity:
+                Id: 2a000004-0000-0000-0000-000000000004
+                Name: AsteroidField
+                Components:
+                    87f4d000-0000-0000-0000-000000000001: !TransformComponent
+                        Id: 87f4d000-0000-0000-0000-000000000001
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                    87f4d000-0000-0000-0000-000000000002: !DriftHangar.Scripts.AsteroidField,DriftHangar.Game
+                        Id: 87f4d000-0000-0000-0000-000000000002
+                        AsteroidPrefab: ref!! 00000000-0000-0000-0000-000000000000:Prefabs/Asteroid
+                        Count: 160
+                        FieldRadius: 220.0
+                        MinSpawnDistance: 24.0
+                        MinSeparation: 6.0
+                        ScaleMin: 0.6
+                        ScaleMax: 3.4
+                        Seed: 1337
+                        MaxPlacementTries: 24
+        -   Entity:
+                Id: 2a000005-0000-0000-0000-000000000005
+                Name: HUD
+                Components:
+                    87f4e000-0000-0000-0000-000000000001: !TransformComponent
+                        Id: 87f4e000-0000-0000-0000-000000000001
+                    87f4e000-0000-0000-0000-000000000002: !UIComponent
+                        Id: 87f4e000-0000-0000-0000-000000000002
+                        # Bind a UIPage with TextBlocks named "SpeedText" and "DistanceText".
+                        Page: null
+                    87f4e000-0000-0000-0000-000000000003: !DriftHangar.Scripts.GameHud,DriftHangar.Game
+                        Id: 87f4e000-0000-0000-0000-000000000003
+                        SpeedTextName: SpeedText
+                        DistanceTextName: DistanceText
+        -   Entity:
+                Id: 2a000006-0000-0000-0000-000000000006
+                Name: PauseController
+                Components:
+                    87f4f000-0000-0000-0000-000000000001: !TransformComponent
+                        Id: 87f4f000-0000-0000-0000-000000000001
+                    87f4f000-0000-0000-0000-000000000002: !DriftHangar.Scripts.PauseMenu,DriftHangar.Game
+                        Id: 87f4f000-0000-0000-0000-000000000002
+                        MenuRoot: null
+                        ToggleKey: Escape

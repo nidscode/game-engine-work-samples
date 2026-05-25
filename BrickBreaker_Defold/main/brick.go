@@ -1,0 +1,37 @@
+components {
+  id: "script"
+  component: "/main/brick.script"
+}
+embedded_components {
+  id: "sprite"
+  type: "sprite"
+  data: "default_animation: \"brick\"\n"
+        "material: \"/builtins/materials/sprite.material\"\n"
+        "size {\n"
+        "  x: 52.0\n"
+        "  y: 18.0\n"
+        "  z: 0.0\n"
+        "}\n"
+}
+embedded_components {
+  id: "collisionobject"
+  type: "collisionobject"
+  data: "type: COLLISION_OBJECT_TYPE_STATIC\n"
+        "mass: 0.0\n"
+        "friction: 0.0\n"
+        "restitution: 1.0\n"
+        "group: \"brick\"\n"
+        "mask: \"ball\"\n"
+        "embedded_collision_shape {\n"
+        "  shapes {\n"
+        "    shape_type: TYPE_BOX\n"
+        "    position { x: 0 y: 0 z: 0 }\n"
+        "    rotation { x: 0 y: 0 z: 0 w: 1 }\n"
+        "    index: 0\n"
+        "    count: 3\n"
+        "  }\n"
+        "  data: 26.0\n"
+        "  data: 9.0\n"
+        "  data: 1.0\n"
+        "}\n"
+}
