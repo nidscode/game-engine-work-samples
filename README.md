@@ -53,8 +53,3 @@ Third-person space flight in C# on .NET 8. 6-DoF rotation is composed in the **s
 - Every project's README has a "How to run" section. Most engines just need an open-project + play.
 - Code is statically typed where the language supports it: GDScript types, Python type hints, C# nullable refs enabled.
 - No projects depend on external asset files — meshes are procedural, sprites are colored quads / polygons, fonts are system defaults. You can clone and run with no asset pipeline setup.
-
-## Author
-
-**Agneya Kolhatkar**
-[kolhatkaragneya@gmail.com](mailto:kolhatkaragneya@gmail.com)
